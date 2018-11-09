@@ -1,0 +1,18 @@
+#! /bin/bash
+
+# Get the CPU Idel % from TOP command
+idel_value=$(top -F -R -stats "cpu" -l 1 | awk '/CPU usage/ { print $7 }')
+
+# Find string length
+strlen=${#idel_value}
+# Length without the $ symbol
+maxlen=$((strlen-1))
+
+# Copy only the numeric values
+idel_usage=${idel_value: 0:$maxlen}
+
+# Idel percentage - 100 = cpu usage ( same as user cpu usage + system cpu usage )
+cpu_usage=$(echo "100 - $idel_usage" | bc)
+
+# Display cpu usage as a percentage 
+echo $cpu_usage%
